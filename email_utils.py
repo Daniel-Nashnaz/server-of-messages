@@ -26,7 +26,7 @@ def send_email(recipient_email: str, subject: str, body: str) -> bool:
     msg['Subject'] = subject
 
     # Add message to container
-    msg.attach(MIMEText(body, 'plain'))
+    msg.attach(MIMEText(body, 'html'))
 
     try:
         # Connect to SMTP server

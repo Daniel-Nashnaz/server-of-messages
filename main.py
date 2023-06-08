@@ -14,20 +14,32 @@ def start_sends():
         time.sleep(5)
 
 
-p = multiprocessing.Process(target=start_sends)
+p = None
 
 
 @app.get("/start")
 async def start():
-    p.start()
+    global p
+    if p is None:
+        p = multiprocessing.Process(target=start_sends)
+        p.start()
+        return {"message": "Process started successfully."}
+    else:
+        return {"message": "Process is already running."}
 
 
 @app.get("/end")
 async def end():
-    p.terminate()
+    global p
+    if p is not None:
+        p.terminate()
+        p = None
+        return {"message": "Process terminated successfully."}
+    else:
+        return {"message": "No process is currently running."}
 
 
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run("main:app", host="localhost", port=8080, reload=True)
+    uvicorn.run("main:app", host="localhost", port=8000, reload=True)
